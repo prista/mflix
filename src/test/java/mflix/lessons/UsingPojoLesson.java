@@ -144,6 +144,8 @@ public class UsingPojoLesson extends AbstractLesson {
 
     MongoCollection<ActorBasic> actors =
         testDb.getCollection("actors", ActorBasic.class).withCodecRegistry(pojoCodecRegistry);
+    // теперь эта коллекция знает про то как
+    // маппить в Pojo из Document
 
     // create a  query to retrieve a document with a given actor id.
     Bson queryFilter = new Document("_id", actor1Id);
@@ -204,6 +206,7 @@ public class UsingPojoLesson extends AbstractLesson {
    *
    */
 
+  // this is mapping method
   public ActorWithStringId fromDocument(Document doc) {
     ActorWithStringId actor = new ActorWithStringId(); // create an empty ActorWithStringId object
     actor.setId(doc.getObjectId("_id").toHexString()); // convert to String
