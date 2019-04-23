@@ -71,12 +71,11 @@ public class UserDao extends AbstractMFlixDao {
    * @return true if successful
    */
   public boolean createUserSession(String userId, String jwt) {
-    Session session = new Session();
-    session.setUserId(userId);
-    session.setJwt(jwt);
-    sessionsCollection.insertOne(session);
-    Bson queryFilter = new Document("user_id", session.getUserId());
-    return sessionsCollection.find(queryFilter).iterator().hasNext();
+    Bson updateFilter = new Document("user_id", userId);
+    Bson setUpdate = Updates.set("jwt", jwt);
+    UpdateOptions options = new UpdateOptions().upsert(true);
+    sessionsCollection.updateOne(updateFilter, setUpdate, options);
+    return true;
     //TODO > Ticket: Handling Errors - implement a safeguard against
     // creating a session with the same jwt token.
   }
@@ -133,10 +132,15 @@ public class UserDao extends AbstractMFlixDao {
    * @return User object that just been updated.
    */
   public boolean updateUserPreferences(String email, Map<String, ?> userPreferences) {
-    //TODO> Ticket: User Preferences - implement the method that allows for user preferences to
-    // be updated.
+    if (userPreferences == null) {
+      throw new IncorrectDaoOperation(String.format("%s cannot be null", userPreferences));
+    }
+    Bson queryFilter = new Document("email", email);
+    User user = usersCollection.find(queryFilter).limit(1).iterator().tryNext();
+    user.setPreferences((Map<String, String>) userPreferences);
+    usersCollection.replaceOne(queryFilter, user);
     //TODO > Ticket: Handling Errors - make this method more robust by
     // handling potential exceptions when updating an entry.
-    return false;
+    return true;
   }
 }
