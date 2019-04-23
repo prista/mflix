@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 public class ActorWithStringId {
-  @BsonProperty("_id")
   private String id;
 
   private String name;
