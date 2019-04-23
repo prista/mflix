@@ -207,6 +207,7 @@ public class UsingPojoLesson extends AbstractLesson {
    */
 
   // this is mapping method
+  // он не требует BsonProperty аннотаций для POJO
   public ActorWithStringId fromDocument(Document doc) {
     ActorWithStringId actor = new ActorWithStringId(); // create an empty ActorWithStringId object
     actor.setId(doc.getObjectId("_id").toHexString()); // convert to String
