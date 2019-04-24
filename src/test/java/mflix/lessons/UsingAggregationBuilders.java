@@ -273,6 +273,7 @@ public class UsingAggregationBuilders extends AbstractLesson {
     to create a set of cast members.
      */
 
+    // тут видно, что в этот фейсет мы засунули 2 стейджа (саб-пайплайн)
     Facet castMembersFacet = new Facet("cast_members", unwindCast, groupCastSet);
 
     // unwind genres
@@ -285,6 +286,7 @@ public class UsingAggregationBuilders extends AbstractLesson {
     Facet genresCountFacet = new Facet("genres_count", unwindGenres, genresSortByCount);
 
     // year bucketAuto
+    // по сути делим по годам на 10 сегментов, где автоматом определяются нижняя и верхняя границы
     Bson yearBucketStage = Aggregates.bucketAuto("$year", 10);
 
     // year bucket facet
@@ -306,6 +308,7 @@ public class UsingAggregationBuilders extends AbstractLesson {
      */
 
     // $facets stage
+    // после фейсет метода выплевывается один документ, с внутрянкой соедржащей то что мы передали
     Bson facetsStage = Aggregates.facet(castMembersFacet, genresCountFacet, yearBucketFacet);
 
     // match stage

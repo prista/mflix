@@ -130,16 +130,6 @@ public class MovieDao extends AbstractMFlixDao {
    * @return List of matching Document objects.
    */
   public List<Document> getMoviesByCountry(String... country) {
-
-    // my solution
-/*    Bson queryFilter = new Document("countries", new Document("$all", Arrays.asList(country)));
-    Bson projection = new Document("title", 1);
-    List<Document> movies = new ArrayList<>();
-    moviesCollection.find(queryFilter).projection(projection).into(movies);
-
-    return movies;*/
-
-    // from developers:
     Bson queryFilter = Filters.in("countries", country);
     Bson projection = Projections.include("title");
     List<Document> movies = new ArrayList<>();
@@ -299,16 +289,11 @@ public class MovieDao extends AbstractMFlixDao {
     // Using a LinkedList to ensure insertion order
     List<Bson> pipeline = new LinkedList<>();
 
-    // TODO > Ticket: Faceted Search - build the aggregation pipeline by adding all stages in the
-    // correct order
-    // Your job is to order the stages correctly in the pipeline.
-    // Starting with the `matchStage` add the remaining stages.
     pipeline.add(matchStage);
     pipeline.add(sortStage);
     pipeline.add(skipStage);
     pipeline.add(limitStage);
     pipeline.add(facetStage);
-
     moviesCollection.aggregate(pipeline).iterator().forEachRemaining(movies::add);
     return movies;
   }
